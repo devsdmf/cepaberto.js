@@ -15,5 +15,8 @@
     "sdk"
   ],
   "author": "Lucas Mendes <devsdmf@gmail.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "request": "^2.81.0"
+  }
 }
