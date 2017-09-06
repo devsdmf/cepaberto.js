@@ -4,7 +4,7 @@
   "description": "The JavaScript SDK for CEP Aberto open database API",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha"
   },
   "keywords": [
     "cep",
@@ -18,5 +18,10 @@
   "license": "MIT",
   "dependencies": {
     "request": "^2.81.0"
+  },
+  "devDependencies": {
+    "mocha": "^3.5.0",
+    "should": "^13.0.0",
+    "sinon": "^3.2.1"
   }
 }
