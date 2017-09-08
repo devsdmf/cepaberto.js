@@ -72,7 +72,54 @@ describe('CEPAberto', () => {
         
         cepaberto.findByCode(zipcode)
                  .then((address) => {})
-                 .catch((error) => should.fail())
+                 .catch((err) => should.fail())
+    })
+
+    it('#should return a valid address when find by coordinates', () => {
+        let lat = '-20.55',
+            lng = '-43.63'
+        let requestMock = nock('http://www.cepaberto.com')
+                                .get('api/v2/ceps.json?lat=' + lat + '&lng=' + lng)
+                                .reply(200, {
+                                    "altitude": 1072.4,
+                                    "bairro": null,
+                                    "cep": "36420000",
+                                    "latitude": "-20.5236387",
+                                    "longitude": "-43.691412",
+                                    "logradouro": "Ouro Branco",
+                                    "cidade": "Ouro Branco",
+                                    "ddd": 31,
+                                    "ibge": "3145901",
+                                    "estado": "MG"
+                                })
+        
+        cepaberto.findByCoordinates(lat,lng)
+                 .then((address) => address.should.be.an.instanceOf(Address)
+                                            .and.have.property('latitude',lat)
+                                            .and.have.property('longitude',lng))
+    })
+
+    it('#should return false due to not found address when find by coordinates', () => {
+        let lat = '-123',
+            lng = '-123'
+        let requestMock = nock('http://www.cepaberto.com')
+                                .get('api/v2/ceps.json?lat=' + lat + '&lng=' + lng)
+                                .reply(200,{})
+        
+        cepaberto.findByCoordinates(lat,lng)
+                 .then((address) => address.should.be.false())
+    })
+
+    it('#should throw an error due to a problem with the request when find by coordinates', () => {
+        let lat = '-987',
+            lng = '-987'
+        let requestMock = nock('http://www.cepaberto.com')
+                                .get('api/v2/ceps.json?lat=' + lat + '&lng=' + lng)
+                                .replyWithError()
+        
+        cepaberto.findByCoordinates(lat,lng)
+                 .then((address) => {})
+                 .catch((err) => should.fail())
     })
 
 })
