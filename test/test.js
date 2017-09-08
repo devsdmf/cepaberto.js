@@ -2,7 +2,9 @@
 var request = require('request'),
     should = require('should'),
     sinon = require('sinon'),
+    nock = require('nock'),
     CEPAberto = require('../index'),
+    Address = require('../lib/address'),
     cepaberto
 
 const API_TOKEN = 'sample-api-token'
@@ -32,7 +34,26 @@ describe('CEPAberto', () => {
     })
 
     it('#should get a valid address', () => {
-        sinon.stub(request, 'get').yields(null)
+        let zipcode = '40010000'
+        let requestMock = nock('http://www.cepaberto.com')
+                                .get('api/v2/ceps.json?cep=' + zipcode)
+                                .reply(200, {
+                                    "altitude": 7.0,
+                                    "bairro": "Comércio", 
+                                    "cep": "40010000",
+                                    "latitude": "-12.967192",
+                                    "longitude": "-38.5101976",
+                                    "logradouro": "Avenida da França",
+                                    "cidade": "Salvador",
+                                    "ddd": 71,
+                                    "ibge": "2927408",
+                                    "estado": "BA"
+                                })
+        
+        cepaberto.findByCode(zipcode)
+                 .then((address) => {
+                     address.should.be.an.instanceOf(Address).and.have.property('zipcode',zipcode)
+                 })
     })
 
 })
