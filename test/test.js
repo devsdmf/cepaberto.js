@@ -122,4 +122,106 @@ describe('CEPAberto', () => {
                  .catch((err) => should.fail())
     })
 
+    it('#should return a valid address when find by address with state and city', () => {
+        let state = 'SP',
+            city = 'Ubatuba'
+        let requestMock = nock('http://www.cepaberto.com')
+                                .get(`api/v2/ceps.json?estado=${state}&cidade=${city}`)
+                                .reply(200, {
+                                    "altitude": 4.8,
+                                    "bairro": "Foo",
+                                    "cep": "11680000",
+                                    "latitude": "-23.4336578",
+                                    "longitude": "-45.0838481",
+                                    "logradouro": "Ubatuba",
+                                    "cidade": "Ubatuba",
+                                    "ddd": 12,
+                                    "ibge": "3555406",
+                                    "estado": "SP"
+                                })
+
+        cepaberto.findByAddress(state,city)
+                 .then((address) => address.should.be.an.instanceOf(Address)
+                                            .and.have.property('state',state)
+                                            .and.have.property('city',city))
+
+    })
+
+    it('#should return a valid address when find by address with state, city and neighborhood', () => {
+        let state = 'SP',
+            city = 'Ubatuba',
+            neighborhood = 'Foo'
+        let requestMock = nock('http://www.cepaberto.com')
+                                .get(`api/v2/ceps.json?estado=${state}&cidade=${city}&bairro=${neighborhood}`)
+                                .reply(200, {
+                                    "altitude": 4.8,
+                                    "bairro": "Foo",
+                                    "cep": "11680000",
+                                    "latitude": "-23.4336578",
+                                    "longitude": "-45.0838481",
+                                    "logradouro": "Ubatuba",
+                                    "cidade": "Ubatuba",
+                                    "ddd": 12,
+                                    "ibge": "3555406",
+                                    "estado": "SP"
+                                })
+
+        cepaberto.findByAddress(state,city,neighborhood)
+                 .then((address) => address.should.be.an.instanceOf(Address)
+                                            .and.have.property('state',state)
+                                            .and.have.property('city',city)
+                                            .and.have.property('neighborhood',neighborhood))
+    })
+
+    it('#should return a valid address when find by address with state, city, neighborhood and street', () => {
+        let state = 'SP',
+            city = 'Ubatuba',
+            neighborhood = 'Foo',
+            street = 'Ubatuba'
+        let requestMock = nock('http://www.cepaberto.com')
+                                .get(`api/v2/ceps.json?estado=${state}&cidade=${city}&bairro=${neighborhood}&logradouro=${street}`)
+                                .reply(200, {
+                                    "altitude": 4.8,
+                                    "bairro": "Foo",
+                                    "cep": "11680000",
+                                    "latitude": "-23.4336578",
+                                    "longitude": "-45.0838481",
+                                    "logradouro": "Ubatuba",
+                                    "cidade": "Ubatuba",
+                                    "ddd": 12,
+                                    "ibge": "3555406",
+                                    "estado": "SP"
+                                })
+
+        cepaberto.findByAddress(state,city,neighborhood,street)
+                 .then((address) => address.should.be.an.instanceOf(Address)
+                                            .and.have.property('state',state)
+                                            .and.have.property('city',city)
+                                            .and.have.property('neighborhood',neighborhood)
+                                            .and.have.property('street',street))
+    })
+
+    it('#should return false due to not found address when find by address', () => {
+        let state = 'MG',
+            city = 'Belo Horizonte'
+        let requestMock = nock('http://www.cepaberto.com')
+                                .get('api/v2/ceps.json?estado=' + state + '&cidade=' + city)
+                                .reply(200, {})
+        
+        cepaberto.findByAddress(state,city)
+                 .then((address) => address.should.be.false())
+    })
+
+    it('#should throw an error due to a problem with the request when find by address', () => {
+        let state = 'MG',
+            city = 'Belo Horizonte'
+        let requestMock = nock('http://www.cepaberto.com')
+                                .get('api/v2/ceps.json?estado=' + state + '&cidade=' + city)
+                                .replyWithError()
+        
+        cepaberto.findByAddress(state,city)
+                 .then((address) => {})
+                 .catch((err) => should.fail())
+    })
+
 })
