@@ -33,7 +33,7 @@ describe('CEPAberto', () => {
         instance.apiToken.should.be.eql('changed-api-token')
     })
 
-    it('#should get a valid address', () => {
+    it('#should return a valid address when find by code', () => {
         let zipcode = '40010000'
         let requestMock = nock('http://www.cepaberto.com')
                                 .get('api/v2/ceps.json?cep=' + zipcode)
@@ -51,9 +51,28 @@ describe('CEPAberto', () => {
                                 })
         
         cepaberto.findByCode(zipcode)
-                 .then((address) => {
-                     address.should.be.an.instanceOf(Address).and.have.property('zipcode',zipcode)
-                 })
+                 .then((address) => address.should.be.an.instanceOf(Address).and.have.property('zipcode',zipcode))
+    })
+
+    it('#should return false due to not found address when find by code', () => {
+        let zipcode = '00000000'
+        let requestMock = nock('http://www.cepaberto.com')
+                                .get('api/v2/ceps.json?cep=' + zipcode)
+                                .reply(200, {})
+        
+        cepaberto.findByCode(zipcode)
+                 .then((address) => address.should.be.false())
+    })
+
+    it('#should throw an error due to a problem with the request when find by code', () => {
+        let zipcode = '00000000'
+        let requestMock = nock('http://www.cepaberto.com')
+                                .get('api/v2/ceps.json?cep=' + zipcode)
+                                .replyWithError()
+        
+        cepaberto.findByCode(zipcode)
+                 .then((address) => {})
+                 .catch((error) => should.fail())
     })
 
 })
