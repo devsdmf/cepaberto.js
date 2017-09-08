@@ -1,7 +1,6 @@
 
 var request = require('request'),
     should = require('should'),
-    sinon = require('sinon'),
     nock = require('nock'),
     CEPAberto = require('../index'),
     Address = require('../lib/address'),
