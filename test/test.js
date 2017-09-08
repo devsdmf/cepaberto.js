@@ -11,6 +11,7 @@ const API_TOKEN = 'sample-api-token'
 
 beforeEach(() => {
     cepaberto = new CEPAberto(API_TOKEN)
+    address = new Address()
 })
 
 describe('CEPAberto', () => {
@@ -251,4 +252,43 @@ describe('CEPAberto', () => {
                  .catch((err) => should.fail())
     })
 
+})
+
+describe('Address', () => {
+
+    it('#should be an instance of Address class', () => {
+        address.should.be.an.instanceOf(Address)
+    })
+
+    it('#should hydrate with data', () => {
+        let data = {
+            "altitude": 7.0,
+            "bairro": "Comércio", 
+            "cep": "40010000",
+            "latitude": "-12.967192",
+            "longitude": "-38.5101976",
+            "logradouro": "Avenida da França",
+            "cidade": "Salvador",
+            "ddd": 71,
+            "ibge": "2927408",
+            "estado": "BA"
+        }
+
+        address.hydrate(data)
+
+        address.should.have.property('street',data.logradouro)
+        address.should.have.property('neighborhood',data.bairro)
+        address.should.have.property('city',data.cidade)
+        address.should.have.property('state',data.estado)
+        address.should.have.property('zipcode',data.cep)
+        address.should.have.property('ibge',data.ibge)
+        address.should.have.property('area',data.ddd)
+        address.should.have.property('altitude',data.altitude)
+        address.should.have.property('latitude',data.latitude)
+        address.should.have.property('longitude',data.longitude)
+    })
+
+    it('#should throw an error due to empty object when hydrate', () => {
+        should(() => address.hydrate({})).throw('Invalid data set for hydrate method')
+    })
 })
