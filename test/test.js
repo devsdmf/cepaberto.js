@@ -224,4 +224,31 @@ describe('CEPAberto', () => {
                  .catch((err) => should.fail())
     })
 
+    it('#should return a list with cities when find by cities', () => {
+        let state = 'AM'
+        let requestMock = nock('http://www.cepaberto.com')
+                                .get('api/v2/cities.json?estado=' + state)
+                                .reply(200, [
+                                    'Alvarães',
+                                    'Amatari (Itacoatiara)',
+                                    'Amaturá',
+                                    'Anamã'
+                                ])
+                                
+        cepaberto.findCities(state)
+                 .then((cities) => cities.should.be.an.Array()
+                                            .and.containDeep(['Alvarães','Amaturá']))
+    })
+
+    it('#should throw an error due to a problem with the request when find by cities', () => {
+        let state = 'XX'
+        let requestMock = nock('http://www.cepaberto.com')
+                                .get('api/v2/cities.json?estado=' + state)
+                                .replyWithError()
+        
+        cepaberto.findCities(state)
+                 .then((cities) => [])
+                 .catch((err) => should.fail())
+    })
+
 })
