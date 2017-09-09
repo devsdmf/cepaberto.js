@@ -1,6 +1,7 @@
 # CEP Aberto JavaScript SDK
 
 [![Build Status](https://travis-ci.org/devsdmf/cepaberto.js.svg?branch=master)](https://travis-ci.org/devsdmf/cepaberto.js)
+[![Coverage Status](https://coveralls.io/repos/github/devsdmf/cepaberto.js/badge.svg?branch=code-coverage)](https://coveralls.io/github/devsdmf/cepaberto.js?branch=code-coverage)
 
 This is the JavaScript SDK for the CEP Aberto API to search for addresses and zipcodes directly from your JS application.
 
