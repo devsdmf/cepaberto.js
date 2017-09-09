@@ -4,7 +4,8 @@
   "description": "The JavaScript SDK for CEP Aberto open database API",
   "main": "index.js",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "cover": "istanbul cover _mocha"
   },
   "keywords": [
     "cep",
